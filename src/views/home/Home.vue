@@ -3,14 +3,24 @@
    <nav-bar class="home-nav">
      <div slot="center">购物街</div>
    </nav-bar>
-   <home-swiper :banners="banners" class="home-banners"/>
-   <recommend-view :recommends="recommends"/>
-   <feature-view/>
-   <tab-control 
-      :titles="['流行', '新款', '精选']" 
-      class="tab-control"
-      @tabClick="tabClick"/>
-   <goods-list :goods="showGoods"></goods-list>
+  <scroll class="content" 
+          ref="scroll" 
+          :probeType="3"
+          :pullUpLoad="true"
+          @scroll="homeScroll"
+          @pullingUp="homeLoadMore"
+          
+          >
+    <home-swiper :banners="banners" class="home-banners"/>
+    <recommend-view :recommends="recommends"/>
+    <feature-view/>
+    <tab-control 
+        :titles="['流行', '新款', '精选']" 
+        class="tab-control"
+        @tabClick="tabClick"/>
+    <goods-list :goods="showGoods"></goods-list>
+  </scroll>
+  <back-top @click.native="backtop" v-show="topBtnShow"/>
  </div>
 </template>
 
@@ -24,6 +34,8 @@ import  FeatureView from "./childComps/FeatureView";
 import NavBar from 'components/common/navbar/NavBar';
 import TabControl from 'components/content/tabControl/TabControl';
 import GoodsList from 'components/content/goods/GoodsList';
+import Scroll from 'components/common/scroll/Scroll';
+import BackTop from 'components/content/backTop/BackTop';
 //方法∏
 import { getHomeMultiData, getHomeGoods } from 'network/home';
 
@@ -35,6 +47,7 @@ import { getHomeMultiData, getHomeGoods } from 'network/home';
        recommends: [],
        goodsKinds: ['pop', 'new', 'sell'],
        currentIndex: 0,
+       topBtnShow: false,
        goods: {
          'pop': {page: 0, list: []},
          'new': {page: 0, list: []},
@@ -65,7 +78,23 @@ import { getHomeMultiData, getHomeGoods } from 'network/home';
        this.currentIndex = index
      },
 
+     backtop(){
+       this.$refs.scroll.scrollTo(0, 0, 500)       //通过ref拿到scroll组件对象 再拿到组件的data
+     },
 
+     homeScroll(position){
+       if (position.y < -500) {
+         this.topBtnShow = true
+       }else{
+         this.topBtnShow = false
+       }
+     },
+
+     homeLoadMore(){
+       console.log("上拉加载更多");
+       this.getHomeGoods(this.goodsKinds[this.currentIndex])
+       this.$refs.scroll.finishPullUp()
+     },
      /*
       请求相关
      */
@@ -91,12 +120,17 @@ import { getHomeMultiData, getHomeGoods } from 'network/home';
     FeatureView,
     NavBar,
     TabControl,
-    GoodsList
+    GoodsList,
+    Scroll,
+    BackTop
    }
  }
 </script>
 
-<style>
+<style scoped>
+  #home {
+    height: 100vh;
+  }
   .home-nav {
     background-color: var(--color-tint);
     color: #fff;
@@ -116,4 +150,9 @@ import { getHomeMultiData, getHomeGoods } from 'network/home';
   top: 44px;
 }
 
+.content {
+  height: calc(100% - 93px);
+  overflow: hidden;
+  margin-top: 44px;
+}
 </style>
