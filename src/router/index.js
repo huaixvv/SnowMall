@@ -5,6 +5,7 @@ const Home = () => import('views/home/Home')
 const Cart = () => import('views/cart/Cart')
 const Profile = () => import('views/profile/profile')
 const Catagory = () => import('views/catagory/Catagory')
+const Detail = () => import('views/detail/Detail')
 
 Vue.use(VueRouter)
 
@@ -28,6 +29,10 @@ const routes = [
   {
     path: '/catagory',
     component: Catagory
+  },
+  { 
+    path: '/detail/:id',   //动态路由
+    component: Detail
   }
 
 ]

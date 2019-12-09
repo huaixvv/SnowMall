@@ -20,7 +20,8 @@
     <home-swiper :banners="banners" 
                   class="home-banners"
                   @swiperImgLoad="homeSwiperImgLoad"
-                  :class="{fixed: isTabFixed}"/>
+                  :class="{fixed: isTabFixed}"
+                  />
     <recommend-view :recommends="recommends"/>
     <feature-view/>
     <tab-control 
@@ -49,18 +50,23 @@ import BackTop from 'components/content/backTop/BackTop';
 //方法∏
 import { getHomeMultiData, getHomeGoods } from 'network/home';
 import { debounce } from 'common/debounce';
+import { backTopMixin } from 'common/mixin';
 
  export default {
    name: 'Home',
+   mixins:[backTopMixin],
+
    data () {
      return {
        banners: [],
        recommends: [],
        goodsKinds: ['pop', 'new', 'sell'],
        currentIndex: 0,
-       topBtnShow: false,
        taboffsetTop: 0,
        isTabFixed: false,
+       startTimer:null,
+       stopTimer: null,
+       saveY: 0,  //离开home时记录滚动的位置，切换组件回到home保持和离开一样的距离
        goods: {
          'pop': {page: 0, list: []},
          'new': {page: 0, list: []},
@@ -82,6 +88,7 @@ import { debounce } from 'common/debounce';
      this.getHomeGoods('new')
      this.getHomeGoods('sell')
 
+
      
    },
    mounted(){
@@ -95,14 +102,22 @@ import { debounce } from 'common/debounce';
       // 先判断scroll对象是否存在
       this.$refs.scroll && refresh()    
       })
+   },
 
-      /**
-       * 2.tab-control 吸顶的 设置
-       */
-      
+   /**
+    * 解决切换路由后返回无法回到离开之前的位置问题
+    */
+   activated(){
+     this.$refs.scroll.scrollTo(0, this.saveY, .001)
+     this.$refs.scroll.refresh()
+   },
+   deactivated(){
+     this.saveY = this.$refs.scroll.scroll.y
    },
 
    methods: {
+    
+
      /**
       * 事件监听
       */
@@ -112,25 +127,18 @@ import { debounce } from 'common/debounce';
        this.$refs.tabControl1.currentIndex = index
      },
 
-     backtop(){
-       this.$refs.scroll.scrollTo(0, 0, 500)       //通过ref拿到scroll组件对象 再拿到组件的data
-     },
 
     //监听滚动
      homeScroll(position){
-       //backtop 回到顶部是否显示
-       if (position.y < -500) {
-         this.topBtnShow = true
-       }else{
-         this.topBtnShow = false
-       }
+       
+       this.backToTop(position)
 
       //决定tabControl是否吸顶
-      this.isTabFixed = (-position.y) >= this.taboffsetTop-44
+       this.isTabFixed = (-position.y) >= this.taboffsetTop-44
      },
 
      homeLoadMore(){
-       console.log("上拉加载更多");
+       //console.log("上拉加载更多");
        this.getHomeGoods(this.goodsKinds[this.currentIndex])
        //完成上拉加载更多后需要调用scroll.finishPullUp() 后才可以继续下一次上拉加载操作
        this.$refs.scroll.finishPullUp()
@@ -139,7 +147,7 @@ import { debounce } from 'common/debounce';
     //轮播图加载完后计算tabcontrol的offsettop值
      homeSwiperImgLoad(){
        this.taboffsetTop = this.$refs.tabControl2.$el.offsetTop
-       console.log( this.taboffsetTop);
+      // console.log( this.taboffsetTop);
      },
 
      /*

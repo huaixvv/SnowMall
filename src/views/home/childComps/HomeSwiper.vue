@@ -25,9 +25,11 @@ import { Swiper, SwiperItem } from 'components/common/swiper';
    },
    data() {
      return {
-       isload: false
+        isload: false,
      }
    },
+
+  
 
     methods:{
       swiperImgLoad(){
@@ -37,6 +39,7 @@ import { Swiper, SwiperItem } from 'components/common/swiper';
         }
     }
     },
+
    components: {
      Swiper,
      SwiperItem
