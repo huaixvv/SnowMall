@@ -157,7 +157,12 @@
         product.iid = this.iid
 
         //添加到购物车   vuex--store
-        this.$store.dispatch('addCart', product)
+        this.$store.dispatch('addCart', product).then(res => {
+          console.log(res);
+
+          //弹窗
+          this.$toast.show(res, 2000)
+        })
       }
 
 
