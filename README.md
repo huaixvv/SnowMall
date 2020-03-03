@@ -1,19 +1,34 @@
 # vuemall
 
-## Project setup
+### 运行图片
 ```
-npm install
+home
+```
+![](https://github.com/Dusksnowing/vuemalltest/blob/master/run-Image/home.png)
+
+
+```
+catagory
+```
+![](https://github.com/Dusksnowing/vuemalltest/blob/master/run-Image/catagory.png)
+
+
+```
+detail
+```
+![](https://github.com/Dusksnowing/vuemalltest/blob/master/run-Image/detail1.png)
+![](https://github.com/Dusksnowing/vuemalltest/blob/master/run-Image/detail2.png)
+
+
+```
+cart
+```
+![](https://github.com/Dusksnowing/vuemalltest/blob/master/run-Image/cart1.png)
+![](https://github.com/Dusksnowing/vuemalltest/blob/master/run-Image/cart2.png)
+
+
+
+```
+注：接口已失效
 ```
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
